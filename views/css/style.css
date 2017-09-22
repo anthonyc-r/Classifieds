@@ -1,0 +1,104 @@
+.clearfix {
+	content: "";
+	clear: both;
+	display: table;
+}
+
+body {
+	padding-top: 100px;
+	clear: both;
+}
+header {
+	margin: 0px;
+	padding: 0px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100px;
+
+	background-color: white;
+	overflow: hidden;
+
+	border-bottom: 1px solid lightgrey;
+}
+header h1 {
+	display: block;
+	float: left;
+	height: 100px;
+
+	width: auto;
+	color: black;
+	font-size: 100px;
+	padding: 0px;
+	margin: 0px;
+}
+header form {
+	display: block;
+	float: right;
+
+	padding: 25px;
+	height: 50px;
+}
+header form input {
+	display: inline;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+
+	font-size: 1em;
+
+	border-radius: 0px;
+	background-color: white;
+	border: 1px solid lightgrey;
+}
+
+#listing:after,
+#sidebar:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+#sidebar {
+	float: left;
+	width: 30%;
+	height: 700px;
+	margin-right: 20px;
+	background-color: white;
+	border-right: 1px solid lightgrey;
+}
+
+#listings {
+	float: left;
+	width: 60%;
+	border-spacing: 0px 20px;
+}
+
+#listings td {
+	padding: 5px 5px 5px 10px;
+	transition: 0.5s;
+}
+#listings a{
+	text-decoration: none;
+	color: black;
+}
+
+.listing{
+	border-bottom: 1px solid grey;
+}
+
+@media screen and (max-width: 800px) {
+	body {
+		padding-top: 200px;
+	}
+	header {
+		height: 200px;
+	}
+	#sidebar {
+		display: none;
+	}
+	#listings {
+		width: 100%;
+	}
+}
