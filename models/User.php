@@ -5,7 +5,7 @@ namespace WebApp\Model;
 include_once "Model.php";
 
 class User extends Model{
-	private static $properties = Array('name', 'email', 'password', 'tel', 'postcode');
+	private static $properties = Array('name', 'email', 'password', 'salt', 'tel', 'postcode');
 	private static $primaryProperty = 'name';
 	private static $searchProperty = 'name';
 	private static $tableName = 'User';
@@ -20,10 +20,9 @@ class User extends Model{
 
 	public function isExistingUser() {
 		$tableName = self::$tableName;
-		$values = $this->getValues();
+		$values = $this->getAssoc();
 		$name = $values['name'];
-		$password = $values['passoword'];
-		$query = "SELECT * FROM main.{$tableName} WHERE name = '$name' AND passowrd = '$password'";
+		return static::get($name) !=  NULL;
 	}
 
 	public function makeSafe(&$data) {
@@ -36,14 +35,22 @@ class User extends Model{
 		$errors = "";
 		$name = $data['name'];
 		$password = $data['password'];
+		$telephone = $data['tel'];
+		$postcode = $data['postcode'];
 
 		$namelen = strlen($name);
 		$pwdlen = strlen($password);
+		$postcodelen = strlen($postcode);
+		$telephonelen = strlen($telephone);
 
 		if ($namelen > 16 || $namelen < 3)
 			$errors .= "Name length is not between 3 and 16.";
 		if ($pwdlen != 64)
 			$errors .= "Password not hashed correctly.";
+		if ($postcodelen != 7)
+			$errors .= "Invalid postcode.";
+		if ($telephonelen < 1 || !is_numeric($telephone))
+			$errors .= "Invalid telephone number";
 
 		if ($errors != "")
 			return false;
@@ -77,22 +84,20 @@ class User extends Model{
 	public static function fromLogin($username, $password) {
 		if ($potentialUser = static::get($username)) {
 			$userinfo = $potentialUser->getAssoc();
-			if ($userinfo['password'] == $password) {
+			$hashword = hash('sha256', $password.$userinfo['salt']);
+			if ($userinfo['password'] === $hashword) {
 				return $potentialUser;
 			}
 		}	
-		else {
-			return false;
-		}
-
+		return NULL;
 	}
 
 
 }
 
-User::query("DELETE FROM main.user WHERE 1");
-$testhash = hash('sha256', 'kek');
-$usr = new User('ayylmaoo', 'ayy@yolo.swag', $testhash, '07000000000', 'mm111rm');
+$testsalt = 'testsalt';
+$testhash = hash('sha256', 'kek'.$testsalt);
+$usr = new User('ayylmaoo', 'ayy@yolo.swag', $testhash, $testsalt, '07000000000', 'mm111rm');
 $usr->put();
 
 ?>

@@ -89,11 +89,11 @@ abstract class Model {
 		$query = "SELECT rowid, * FROM main.{$tableName} WHERE {$primaryProp}='$primaryValue' LIMIT 1";
 		//print($query);
 		$rows = self::query($query);
-		if ($rows[0]) {
+		if (count($rows) > 0 && $rows[0]) {
 			return self::rowToObject($rows[0]);
 		}
 		else {
-			return null;
+			return NULL;
 		}
 
 	}

@@ -22,6 +22,7 @@ CREATE TABLE main.user (
 	name VARCHAR(64) NOT NULL PRIMARY KEY,
 	email VARCHAR(64) NOT NULL,
 	password CHAR(64) NOT NULL,
+	salt CHAR(64) NOT NULL,
 	tel VARCHAR(16),
 	postcode VARCHAR(8))
 EOL;

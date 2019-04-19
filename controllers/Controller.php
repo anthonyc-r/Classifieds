@@ -5,9 +5,8 @@ use \WebApp\Model\User;
 
 function login() {
 	if (isset($_POST['username']) && isset($_POST['password'])) {
-		$password = hash('sha256', $_POST['password']);
-		if ($user = User::fromLogin($_POST['username'], $password)) {
-			setcookie('user', serialize($user));
+		if ($user = User::fromLogin($_POST['username'], $_POST['password'])) {
+			setcookie('user', serialize($user),  time() + 2592000, '/');
 			return $user;
 		}
 		
@@ -23,25 +22,21 @@ function login() {
 	}
 }
 
-function logout() {
-	setcookie('user', '', 1);
-	return true;
-}
-
 function validateUser($hacker) {
 	$hackerPassword = $hacker->getAssoc()['password'];
-
 	$user = User::get($hacker->getName());
 	//Make sure the user exists
-	if (!$user)
-		return false;
-
+	if (!$user) {
+		return NULL;
+	}
+	
 	//Make sure the passwords match
 	$userPassword = $user->getAssoc()['password'];
-	if ($userAssoc['password'] == $hackerAssoc['password'])
+	if ($userPassword === $hackerPassword) {
 		return $user;
-	else
-		return false;
-
+	}
+	else {
+		return NULL;
+	}
 }
 ?>
