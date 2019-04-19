@@ -24,7 +24,7 @@ function login() {
 
 function validateUser($hacker) {
 	$hackerPassword = $hacker->getAssoc()['password'];
-	$user = User::get($hacker->getName());
+	$user = User::get($hacker->name);
 	//Make sure the user exists
 	if (!$user) {
 		return NULL;

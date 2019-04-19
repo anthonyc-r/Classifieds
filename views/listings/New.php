@@ -1,27 +1,12 @@
 <?php 
-	include dirname(__FILE__)."/../../controllers/ListingController.php";
+include dirname(__FILE__)."/../../controllers/ListingController.php";
+include dirname(__FILE__)."/../templates/PageTemplateStart.php";
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Search Listings...</title>
-  <link type="text/css" rel="stylesheet" href="../css/style.css">
-  <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
-  <script type="text/javascript" src="../js/script.js"></script>
-</head>
-<body>
-  <header>
-    <h1>Classifieds</h1>
-    <form method="GET" id="headerSearch" action="Search.php">
- 	    <input type="text" name="query" value="<?php print($_GET['query']) ?>" placeholder="Search for listings...">
- 	    <input type="submit" value="Search">
-    </form>
-  </header>
-  <?php
-  /**ENTER IF !NEWLISTING**/
-  if (!newListing()) {
-  ?>
+<?php
+/**ENTER IF !NEWLISTING**/
+if ($user && !newListing($user)) {
+?>
   <form action="./New.php" method="POST">
     <span><?php echo $errors ?></span>
     <table>
@@ -42,15 +27,17 @@
       </tr>
     </table>
   </form>
-  <?php
-  } 
-  else {
-  ?>
+<?php
+} 
+else if($user) {
+?>
   <p>Listing submitted!</p>
-  <?php
-  }
-  /**EXIT IF**/ 
-  ?>
-  <div class="clearfix"></div>
-</body>
-</html>
+<?php
+} else {
+?>
+  <p>Please log in to submit an advert.</p>
+<?php
+}
+/**EXIT IF**/ 
+include dirname(__FILE__)."/../templates/PageTemplateEnd.php";
+?>

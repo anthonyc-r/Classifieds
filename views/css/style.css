@@ -57,6 +57,12 @@ header form input {
 	border: 1px solid lightgrey;
 }
 
+ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
 #listing:after,
 #sidebar:after {
 	content: "";
@@ -66,7 +72,7 @@ header form input {
 
 #sidebar {
 	float: left;
-	width: 30%;
+	width: 20%;
 	height: 700px;
 	margin-right: 20px;
 	background-color: white;

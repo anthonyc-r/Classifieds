@@ -77,10 +77,7 @@ class User extends Model{
 	public function getAssoc() {
 		return $this->assoc;
 	}
-	public function getName() {
-		return $this->assoc['name'];
-	}
-
+	
 	public static function fromLogin($username, $password) {
 		if ($potentialUser = static::get($username)) {
 			$userinfo = $potentialUser->getAssoc();

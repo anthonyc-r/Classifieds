@@ -18,8 +18,13 @@
     /**ENTER IF LOGIN**/
     if ($user) {
     ?>
-      <p1>Welcome, <?php echo $user->getName() ?>!</p1>
+      <p1>Welcome, <?php echo $user->name ?>!</p1>
 	  <a href="../user/Logout.php">Logout</a>
+	  <ul>
+	    <li><a href="../listings/Search.php?user=<?php echo $user->name ?>">My Listings</a></li>
+		<li><a href="">My Profile</a></li>
+		<li><a href="../listings/New.php">New Listing</a></li>
+	  </ul>
     <?php
     }
     /**ELSE**/

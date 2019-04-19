@@ -11,8 +11,9 @@ abstract class Model {
 	private $rowid = false; //!!!!SQLITE SPECIFIC!!!!
 
 	public function __construct() {
-		$columns =static::getProperties();
+		$columns = static::getProperties();
 		$values = $this->getValues();
+		$this->synthisizeProperties($columns, $values);
 		$data = array_combine($columns, $values); //For validation
 
 		if (count($columns) != count($values))
@@ -95,7 +96,20 @@ abstract class Model {
 		else {
 			return NULL;
 		}
-
+	}
+	public static function getWithField($field, $value) {
+		$tableName = static::getTableName();
+		$primaryProp = static::getPrimaryProperty();
+		$query = "SELECT rowid, * FROM main.{$tableName} WHERE {$field}='$value' LIMIT 1";
+		//print($query);
+		$rows = self::query($query);
+		if (count($rows) > 0 && $rows[0]) {
+			return self::rowToObject($rows[0]);
+		}
+		else {
+			return NULL;
+		}
+		
 	}
 	public static function search($searchString) {
 		$tableName = static::getTableName();
@@ -137,6 +151,12 @@ abstract class Model {
 	private function surroundInQuotes(&$array) {
 		for ($i = 0; $i < count($array); $i++) {
 			$array[$i] = '\'' . $array[$i] . '\'';
+		}
+	}
+	
+	private function synthisizeProperties($columns, $values) {
+		for ($i = 0; $i < count($columns); $i++) {
+			$this->{$columns[$i]} = $values[$i];
 		}
 	}
 

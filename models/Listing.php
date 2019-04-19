@@ -3,9 +3,10 @@
 namespace WebApp\Model;
 
 include_once "Model.php";
+include_once "Constants.php";
 
 class Listing extends Model {
-	private static $properties = Array('title', 'description', 'price');
+	private static $properties = Array('title', 'description', 'price', 'createdAt', 'userName');
 	private static $searchProperty = 'title';
 	private static $primaryProperty = 'rowid';
 	private static $tableName = 'Listing';
@@ -24,12 +25,18 @@ class Listing extends Model {
 		$data['description'] = htmlentities($data['description'], ENT_QUOTES, 'UTF-8');
 		$data['price'] = (float) $data['price'];
 	}
-
+	
+	public function getUser() {
+		return User::get($this->userName);
+	}
+	
 	public function validate($data, &$errors) {
 		$errors = "";
 		$title = $data['title'];
 		$description = $data['description'];
 		$price = $data['price'];
+		$userName = $data['userName'];
+		$createdAt = $data['createdAt'];
 
 		if (strlen($title) > 32 || strlen($title) < 3)
 			$errors .= 'Title is not between 3 and 32 characters long. ';
@@ -37,7 +44,10 @@ class Listing extends Model {
 			$errors .= 'Description is not between 3 and 256 characters long. ';
 		if ($price > 1000000.00 || $price < 0.00)
 			$errors .= 'Price is not between £0.00 and £1M';
-
+		if (strlen($userName) < 3)
+			$errors .= 'User not set';
+		if ($createdAt < 1)
+			$errors .= 'Timestamp not set';
 		if ($errors != "")
 			return false;
 		else
@@ -63,20 +73,13 @@ class Listing extends Model {
 	public function getValues() {
 		return $this->values;
 	}
-	public function getTitle() {
-		return $this->assoc['title'];
-	}
-}
 
-//Listing::delete("DELETE FROM main.Listing WHERE 1");
-$ayy = new Listing('topkeks', 'top tier topkeks for sale', '1000000.00');
-$ayy->put();
-$ayy = new Listing('topkek', 'top tier topkeks for sale', '1000000.00');
-$ayy->put();
-$ayy = new Listing('ayylmaos', 'ayylmaos fresh from mars', '10000.00');
-$ayy->put();
-//Listing::search('kek');
-//print('<br>');
-//Listing::search('ayy');
-//Listing::getLatest(2);
+	// Formatting
+	public function getDaysSinceCreated() {
+		$diff = time() - $this->createdAt;
+		$days = $diff / Constants::SECONDS_IN_DAY;
+		return round($days, 0);
+	}
+	
+}
 ?>

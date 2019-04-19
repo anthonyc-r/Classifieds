@@ -7,21 +7,23 @@ include dirname(__FILE__)."/../templates/PageTemplateStart.php";
 <?php
 /**ENTER IF LISTING**/
 if ($listing) {
-  $listing = $listing->getAssoc();
-
 ?>
+  <div id="sidebar">
+  	<p>Posted by <?php echo $listing->userName ?>, <?php echo $listing->getDaysSinceCreated() ?> days ago.</p>
+	<a>View all listings by <a href='../listings/Search.php?user=<?php echo $listing->userName ?>'><?php echo $listing->userName ?></a></p>
+  </div>
   <table id="listing">
     <tr>
       <td><h2>title</h2></td>
-      <td><?php echo $listing['title']; ?></td>
+      <td><?php echo $listing->title; ?></td>
     </tr>
     <tr>
       <td><h2>Description: </h2></td>
-      <td><p><?php echo $listing['description'] ?></p></td>
+      <td><p><?php echo $listing->description ?></p></td>
     </tr>
     <tr>
       <td><h2>Price: </h2></td>
-      <td><?php echo $listing['price'] ?></td>
+      <td><?php echo $listing->price ?></td>
     </tr>
   </table>
 <?php
