@@ -92,9 +92,4 @@ class User extends Model{
 
 }
 
-$testsalt = 'testsalt';
-$testhash = hash('sha256', 'kek'.$testsalt);
-$usr = new User('ayylmaoo', 'ayy@yolo.swag', $testhash, $testsalt, '07000000000', 'mm111rm');
-$usr->put();
-
 ?>

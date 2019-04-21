@@ -10,7 +10,10 @@ if ($listing) {
 ?>
   <div id="sidebar">
   	<p>Posted by <?php echo $listing->userName ?>, <?php echo $listing->getDaysSinceCreated() ?> days ago.</p>
-	<a>View all listings by <a href='../listings/Search.php?user=<?php echo $listing->userName ?>'><?php echo $listing->userName ?></a></p>
+	<p>
+		<a href='../listings/Search.php?user=<?php echo $listing->userName ?>'>View all</a> listings by 
+		<a href='../user/View.php?name=<?php echo $listing->userName ?>'><?php echo $listing->userName ?></a>
+	</p>
   </div>
   <table id="listing">
     <tr>
@@ -31,7 +34,7 @@ if ($listing) {
 /*ENTER ELSE LISTING*/
 else {
 ?>
-  <h1>Ooops, something went wrong :(</h1>
+  <p>Ooops, something went wrong :(</p>
 <?php
 /*END IF LISTING*/
 }

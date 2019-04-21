@@ -22,7 +22,7 @@
 	  <a href="../user/Logout.php">Logout</a>
 	  <ul>
 	    <li><a href="../listings/Search.php?user=<?php echo $user->name ?>">My Listings</a></li>
-		<li><a href="">My Profile</a></li>
+		<li><a href="../user/View.php?name=<?php echo $user->name?>">My Profile</a></li>
 		<li><a href="../listings/New.php">New Listing</a></li>
 	  </ul>
     <?php

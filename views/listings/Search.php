@@ -16,13 +16,13 @@ foreach($listings as $listing) {
   $rowid = $listing->getRowid();
   $page = "./View.php?id=$rowid";
   ?>
-  <a href="<?php echo $page ?>"><div class="listing">
+  <a href='<?php echo $page ?>'><div class='listing'>
     <h3><?php echo $listing->title ?></h3>
     <p><?php echo $listing->description ?></p>
     <p><?php echo $listing->price ?></p>
   </div></a>
 <?php } ?>
-<button onclick="redirect('http://test.html')"></button>
+<button onclick='redirect("http://test.html")'></button>
 </div>
 
 <?php
