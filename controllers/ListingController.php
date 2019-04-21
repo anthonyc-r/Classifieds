@@ -4,7 +4,7 @@ use \WebApp\Model\Listing;
 
 function getListings() {
 	if (isset($_GET['user'])) {
-		return Listing::getWithField('userName', $_GET['user']);
+		return Listing::getByUser($_GET['user']);
 	}
 	else if (isset($_GET['query'])) {
 		return Listing::search($_GET['query']);
@@ -19,7 +19,7 @@ function getListing() {
 		return Listing::get($_GET['id']);
 	}
 	else {
-		return false;
+		return NULL;
 	}
 }
 

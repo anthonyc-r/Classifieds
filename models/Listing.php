@@ -66,6 +66,11 @@ class Listing extends Model {
 	public static function getPrimaryProperty() {
 		return self::$primaryProperty;
 	}
+	
+	public static function getByUser($user) {
+		return self::query("SELECT rowid,* FROM listing WHERE userName == '{$user}'");
+	}
+	
 	//retrieve socks
 	public function getAssoc() {
 		return $this->assoc;

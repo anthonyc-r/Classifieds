@@ -58,14 +58,15 @@ abstract class Model {
 
 	//Get from database
 	public static function query($query) {
+		$models = Array();
 		if ($statement = Model::$database->prepare($query)) {
 			$statement->execute();
-			$returnData = $statement->fetchAll(PDO::FETCH_NUM);
-			return $returnData;
+			$rows = $statement->fetchAll(PDO::FETCH_NUM);
+			foreach($rows as $row) {
+				array_push($models, self::rowToObject($row));
+			}
 		}
-		else {
-			var_dump(Model::$database->errorInfo());
-		}
+		return $models;
 	}
 	//Delete form database
 	public static function delete($query) {
@@ -80,45 +81,29 @@ abstract class Model {
 	public static function getLatest($n) {
 		$tableName = static::getTableName();
 		$query = "SELECT rowid, * FROM main.{$tableName} ORDER BY rowid ASC LIMIT {$n}";
-		$rows = self::query($query);
-		
-		return self::rowsToObjectArray($rows);
+		return self::query($query);
 	}
+	
 	public static function get($primaryValue) {
 		$tableName = static::getTableName();
 		$primaryProp = static::getPrimaryProperty();
 		$query = "SELECT rowid, * FROM main.{$tableName} WHERE {$primaryProp}='$primaryValue' LIMIT 1";
 		//print($query);
-		$rows = self::query($query);
-		if (count($rows) > 0 && $rows[0]) {
-			return self::rowToObject($rows[0]);
+		$models = self::query($query);
+		if (count($models) > 0) {
+			return $models[0];
 		}
 		else {
 			return NULL;
 		}
 	}
-	public static function getWithField($field, $value) {
-		$tableName = static::getTableName();
-		$primaryProp = static::getPrimaryProperty();
-		$query = "SELECT rowid, * FROM main.{$tableName} WHERE {$field}='$value' LIMIT 1";
-		//print($query);
-		$rows = self::query($query);
-		if (count($rows) > 0 && $rows[0]) {
-			return self::rowToObject($rows[0]);
-		}
-		else {
-			return NULL;
-		}
-		
-	}
+	
 	public static function search($searchString) {
 		$tableName = static::getTableName();
 		$searchProp = static::getSearchProperty();
 		$query = "SELECT rowid, * FROM main.{$tableName} WHERE {$searchProp} LIKE '%$searchString%'";
 		//print($query);
-		$rows = self::query($query);
-		
-		return self::rowsToObjectArray($rows);
+		return self::query($query);
 	}
 
 	private static function rowsToObjectArray($rows) {
@@ -127,7 +112,7 @@ abstract class Model {
 		foreach ($rows as $row) {
 			array_push($objs, self::rowToObject($row));
 		}
-		//var_dump($objs);
+		var_dump($objs);
 		return $objs;
 	}
 	private static function rowToObject($row) {
