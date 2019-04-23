@@ -29,7 +29,17 @@ if ($listing) {
       <td><?php echo $listing->price ?></td>
     </tr>
   </table>
-<?php
+  
+  <?php
+  if (isMyListing($user, $listing)) {
+  ?>
+
+  <tr>
+	  <td><a href="Delete.php?id=<?php echo $listing->getRowid() ?>">delete</td>
+  </tr>
+
+  <?php
+  }
 }
 /*ENTER ELSE LISTING*/
 else {

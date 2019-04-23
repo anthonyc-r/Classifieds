@@ -41,6 +41,18 @@ function newListing($user) {
 		return false;
 	}
 }
+
+function isMyListing($me, $listing) {
+	return $me->name === $listing->userName;
+}
+
+function deleteListing($me, $listing) {
+	if (!isMyListing($me, $listing)) {
+		return FALSE;
+	}
+	return $listing->delete();
+}
+
 //var_dump($listings);
 
 ?>

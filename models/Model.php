@@ -32,15 +32,18 @@ abstract class Model {
 		$columns =static::getProperties();
 		$values = $this->getValues();
 		$data = array_combine($columns, $values); //For validation
-
+		
+		//Should be valid now
+		return $this->validate($data, $error) && 
+			   $this->delete() && 
+			   $this->put();
+	}
+	
+	public function delete() {
 		$table = static::getTableName();
 		$primaryProp = static::getPrimaryProperty();
 		$primaryValue = $this->getPrimaryValue();
-		
-		//Should be valid now
-		$this->validate($data, $error) or die('Validation Error: '.$error);
-		static::delete("DELETE FROM main.{$table} WHERE {$primaryProp} = '{$primaryValue}'");
-		$this->put();
+		return static::deleteQuery("DELETE FROM main.{$table} WHERE {$primaryProp} = '{$primaryValue}'");
 	}
 
 	//Insert into database
@@ -59,11 +62,15 @@ abstract class Model {
 		//DBO HANDLES VULNERABILITIES IF CHANGED VULN TO SQL INJECTION!!
 		$insertSQL = "INSERT INTO main.{$table} ({$columns}) VALUES (" . implode(', ', array_fill(0, count($values), '?')) . ")";
 		if ($statement = self::$database->prepare($insertSQL)) {
-			$statement->execute($values);
-			$this->setRowid((int) self::$database->lastInsertId());
+			if (!$statement->execute($values)) {
+				return FALSE;
+			}
+			$this->setRowid((int)self::$database->lastInsertId());
+			return TRUE;
 		}
 		else {
 			var_dump(self::$database->errorInfo());
+			return FALSE;
 		}
 	}
 
@@ -87,12 +94,13 @@ abstract class Model {
 		return $models;
 	}
 	//Delete form database
-	public static function delete($query) {
+	public static function deleteQuery($query) {
 		if ($statement = Model::$database->prepare($query)) {
-			$statement->execute();
+			return $statement->execute();
 		}
 		else {
 			var_dump(Model::$database->errorInfo());
+			return FALSE;
 		}
 	}
 	//Generic search
