@@ -1,17 +1,36 @@
 <?php
-include dirname(__FILE__).'/../models/Listing.php';
+include_once dirname(__FILE__).'/../models/Listing.php';
+include_once dirname(__FILE__).'/../models/Filter.php';
 use \WebApp\Model\Listing;
+use \WebApp\Model\Filter;
+
+function getAppliedFilter() {
+	$minPrice = NULL;
+	$maxPrice = NULL;
+	$maxDistance = NULL;
+	$userName = NULL;
+	if (isset($_GET['minPrice'])) {
+		$minPrice = $_GET['minPrice'];
+	}
+	if (isset($_GET['maxPrice'])) {
+		$maxPrice = $_GET['maxPrice'];
+	}
+	if (isset($_GET['maxDistance'])) {
+		$maxDistance = $_GET['maxDistance'];
+	}
+	if (isset($_GET['user'])) {
+		$userName = $_GET['user'];
+	}
+   return new Filter($minPrice, $maxPrice, $maxDistance, $userName);
+}
 
 function getListings() {
-	if (isset($_GET['user'])) {
-		return Listing::getByUser($_GET['user']);
+	$filter = getAppliedFilter();
+	$search = NULL;
+	if (isset($_GET['query'])) {
+		$search = $_GET['query'];
 	}
-	else if (isset($_GET['query'])) {
-		return Listing::search($_GET['query']);
-	}
-	else {
-		return Listing::getLatest(10);
-	}
+	return Listing::getWithFilterSearch($filter, $search);
 }
 
 function getListing() {

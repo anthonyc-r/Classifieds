@@ -67,10 +67,31 @@ class Listing extends Model {
 		return self::$primaryProperty;
 	}
 	
-	public static function getByUser($user) {
-		return self::query("SELECT rowid,* FROM listing WHERE userName == '{$user}'");
+	public static function getWithFilterSearch($filter, $search) {
+		if (!$filter || $filter->isEmpty()) {
+			if ($search) {
+				return self::search($search);
+			} else {
+				return self::getLatest(10);
+			}
+		}
+		$queryString = "SELECT rowid,* FROM listing WHERE 1 ";
+		if ($filter->getUserName()) {
+			$queryString .= " AND userName == '{$filter->getUserName()}' ";
+		}
+		if ($filter->getMinPrice()) {
+			$queryString .= "AND price >= '{$filter->getMinPrice()}' ";
+		}
+		if ($filter->getMaxPrice()) {
+			$queryString .= "AND price <= '{$filter->getMaxPrice()}' ";
+		}
+		if ($search) {
+			$queryString .= "AND title LIKE '%{$search}%'";
+		}
+		print($queryString);
+		return self::query($queryString);
 	}
-	
+		
 	//retrieve socks
 	public function getAssoc() {
 		return $this->assoc;

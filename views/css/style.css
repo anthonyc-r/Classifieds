@@ -63,6 +63,30 @@ ul {
 	list-style-type: none;
 }
 
+h1 {
+	padding: 0px;
+	margin: 0px;
+	font-size: 25px;
+}
+
+h2 {
+	padding: 0px;
+	margin: 0px;
+	font-size: 20px;
+}
+
+h3 {
+	padding: 0px;
+	margin: 0px;
+	font-size: 17px;
+}
+
+p {
+	padding: 0px;
+	margin: 0px;
+	font-size: 14px;
+}
+
 #listing:after,
 #sidebar:after {
 	content: "";
@@ -77,6 +101,16 @@ ul {
 	margin-right: 20px;
 	background-color: white;
 	border-right: 1px solid lightgrey;
+}
+
+#sidebar input {
+	width: 50px;
+}
+#sidebar table {
+	margin: 0px 10px 10px 0px;
+}
+#sidebar #submitButton {
+	width: 80%;
 }
 
 #listings {
