@@ -76,20 +76,24 @@ class Listing extends Model {
 			}
 		}
 		$queryString = "SELECT rowid,* FROM listing WHERE 1 ";
+		$bindings = array();
 		if ($filter->getUserName()) {
-			$queryString .= " AND userName == '{$filter->getUserName()}' ";
+			$queryString .= "AND userName = :userName ";
+			$bindings[":userName"] = $filter->getUserName();
 		}
 		if ($filter->getMinPrice()) {
-			$queryString .= "AND price >= '{$filter->getMinPrice()}' ";
+			$queryString .= "AND price >= :minPrice ";
+			$bindings[":minPrice"] = $filter->getMinPrice();
 		}
 		if ($filter->getMaxPrice()) {
-			$queryString .= "AND price <= '{$filter->getMaxPrice()}' ";
+			$queryString .= "AND price <= :maxPrice ";
+			$bindings[":maxPrice"] = $filter->getMaxPrice();
 		}
 		if ($search) {
-			$queryString .= "AND title LIKE '%{$search}%'";
+			$queryString .= "AND title LIKE :search";
+			$bindings[":search"] = "%".$search."%";
 		}
-		print($queryString);
-		return self::query($queryString);
+		return self::query($queryString, $bindings);
 	}
 		
 	//retrieve socks

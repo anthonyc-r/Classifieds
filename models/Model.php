@@ -82,10 +82,10 @@ abstract class Model {
 	}
 
 	//Get from database
-	public static function query($query) {
+	public static function query($query, $bindings) {
 		$models = Array();
 		if ($statement = Model::$database->prepare($query)) {
-			$statement->execute();
+			$statement->execute($bindings);
 			$rows = $statement->fetchAll(PDO::FETCH_NUM);
 			foreach($rows as $row) {
 				array_push($models, self::rowToObject($row));
@@ -94,9 +94,9 @@ abstract class Model {
 		return $models;
 	}
 	//Delete form database
-	public static function deleteQuery($query) {
+	public static function deleteQuery($query, $bindings) {
 		if ($statement = Model::$database->prepare($query)) {
-			return $statement->execute();
+			return $statement->execute($bindings);
 		}
 		else {
 			var_dump(Model::$database->errorInfo());
@@ -107,7 +107,7 @@ abstract class Model {
 	public static function getLatest($n) {
 		$tableName = static::getTableName();
 		$query = "SELECT rowid, * FROM main.{$tableName} ORDER BY rowid ASC LIMIT {$n}";
-		return self::query($query);
+		return self::query($query, NULL);
 	}
 	
 	public static function get($primaryValue) {
@@ -115,7 +115,7 @@ abstract class Model {
 		$primaryProp = static::getPrimaryProperty();
 		$query = "SELECT rowid, * FROM main.{$tableName} WHERE {$primaryProp}='$primaryValue' LIMIT 1";
 		//print($query);
-		$models = self::query($query);
+		$models = self::query($query, NULL);
 		if (count($models) > 0) {
 			return $models[0];
 		}
@@ -127,9 +127,9 @@ abstract class Model {
 	public static function search($searchString) {
 		$tableName = static::getTableName();
 		$searchProp = static::getSearchProperty();
-		$query = "SELECT rowid, * FROM main.{$tableName} WHERE {$searchProp} LIKE '%$searchString%'";
+		$query = "SELECT rowid, * FROM main.{$tableName} WHERE {$searchProp} LIKE :searchString";
 		//print($query);
-		return self::query($query);
+		return self::query($query, array(':searchString' => "%".$searchString."%"));
 	}
 
 	private static function rowsToObjectArray($rows) {
