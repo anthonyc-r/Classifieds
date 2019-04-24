@@ -25,7 +25,7 @@ A simple website for advertising stuff for sale.
 - Add photo photos for listings.
 - Add google captcha on sign up. *Very easy to create spam accounts at the moment*
 - Add email based verification. *Same as above, this would also help*
-- Improved design. *Looks very dull at the moment, and isn't responsive.
+- Improved design. *Looks very dull at the moment, and isn't responsive.*
 - Sort by distance. *A free database of postcodes and coordinates exists which could be used to implement this*
 - AJAX. *Improved filtering using AJAX*
 - Google maps integration. *Could be used to display listing locations*
