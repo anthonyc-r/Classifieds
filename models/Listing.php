@@ -2,6 +2,7 @@
 
 namespace WebApp\Model;
 
+
 include_once "Model.php";
 include_once "Constants.php";
 
@@ -67,16 +68,9 @@ class Listing extends Model {
 		return self::$primaryProperty;
 	}
 	
-	public static function getWithFilterSearch($filter, $search) {
-		if (!$filter || $filter->isEmpty()) {
-			if ($search) {
-				return self::search($search);
-			} else {
-				return self::getLatest(10);
-			}
-		}
-		$queryString = "SELECT rowid,* FROM listing WHERE 1 ";
+	private static function getConstraints($filter, $search) {
 		$bindings = array();
+		$queryString = "";
 		if ($filter->getUserName()) {
 			$queryString .= "AND userName = :userName ";
 			$bindings[":userName"] = $filter->getUserName();
@@ -90,10 +84,29 @@ class Listing extends Model {
 			$bindings[":maxPrice"] = $filter->getMaxPrice();
 		}
 		if ($search) {
-			$queryString .= "AND title LIKE :search";
+			$queryString .= "AND title LIKE :search ";
 			$bindings[":search"] = "%".$search."%";
 		}
+		return array("sql" 	=> $queryString, 
+					 "bindings" 	=> $bindings);
+	}
+	
+	public static function getWithFilterSearch($filter, $search, $page, $itemsPerPage) {
+		$queryString = "SELECT rowid,* FROM listing WHERE 1 ";
+		$constraints = self::getConstraints($filter, $search);
+		$queryString .= $constraints['sql'];
+		$offset = $page * $itemsPerPage;
+		$queryString .= "LIMIT {$itemsPerPage} OFFSET {$offset} ";
+		$bindings = $constraints['bindings'];
 		return self::query($queryString, $bindings);
+	}
+	
+	public static function getCountWithFilterSearch($filter, $search) {
+		$queryString = "SELECT count(*) FROM listing WHERE 1 ";
+		$constraints = self::getConstraints($filter, $search);
+		$queryString .= $constraints['sql'];
+		$bindings = $constraints['bindings'];
+		return self::scalar($queryString, $bindings);
 	}
 		
 	//retrieve socks
@@ -111,5 +124,9 @@ class Listing extends Model {
 		return round($days, 0);
 	}
 	
+	public function getFormattedPrice() {
+		setlocale(LC_MONETARY, Constants::LOCALE_UTF8, Constants::LOCALE);
+		return money_format('%.2n', $this->price);
+	}
 }
 ?>

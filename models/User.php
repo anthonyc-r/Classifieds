@@ -47,8 +47,6 @@ class User extends Model{
 			$errors .= "Name length is not between 3 and 16.";
 		if ($pwdlen != 64)
 			$errors .= "Password not hashed correctly.";
-		if ($postcodelen != 7)
-			$errors .= "Invalid postcode.";
 		if ($telephonelen < 1 || !is_numeric($telephone))
 			$errors .= "Invalid telephone number";
 

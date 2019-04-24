@@ -22,6 +22,10 @@ function login() {
 	}
 }
 
+function getSearchUrl() {
+	return $_SERVER['REQUEST_URI'];
+}
+
 function validateUser($hacker) {
 	$hackerPassword = $hacker->getAssoc()['password'];
 	$user = User::get($hacker->name);

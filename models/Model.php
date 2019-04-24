@@ -103,6 +103,18 @@ abstract class Model {
 			return FALSE;
 		}
 	}
+	//Scalar
+	public static function scalar($query, $bindings) {
+		if ($statement = Model::$database->prepare($query)) {
+			$statement->execute($bindings);
+			$count = $statement->fetch(PDO::FETCH_NUM);
+			return $count[0];
+		}
+		else {
+			var_dump(Model::$database->errorInfo());
+			return 0;
+		}
+	}
 	//Generic search
 	public static function getLatest($n) {
 		$tableName = static::getTableName();

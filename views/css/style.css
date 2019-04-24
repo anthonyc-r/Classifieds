@@ -87,6 +87,12 @@ p {
 	font-size: 14px;
 }
 
+.pageSelection {
+	width: 200px;
+	margin: auto;
+	padding: 10px;
+}
+
 #listing:after,
 #sidebar:after {
 	content: "";
@@ -123,7 +129,7 @@ p {
 	padding: 5px 5px 5px 10px;
 	transition: 0.5s;
 }
-#listings a {
+#listings .listing a {
 	text-decoration: none;
 	color: black;
 }

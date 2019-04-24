@@ -4,6 +4,9 @@ include_once dirname(__FILE__).'/../models/Filter.php';
 use \WebApp\Model\Listing;
 use \WebApp\Model\Filter;
 
+define("ITEMS_PER_PAGE", 10);
+define("NUM_PAGES", 7);
+
 function getAppliedFilter() {
 	$minPrice = NULL;
 	$maxPrice = NULL;
@@ -24,13 +27,48 @@ function getAppliedFilter() {
    return new Filter($minPrice, $maxPrice, $maxDistance, $userName);
 }
 
-function getListings() {
-	$filter = getAppliedFilter();
+function getSearchValue() {
 	$search = NULL;
 	if (isset($_GET['query'])) {
 		$search = $_GET['query'];
 	}
-	return Listing::getWithFilterSearch($filter, $search);
+	return $search;
+}
+
+function getCurrentPage() {
+	$page = 0;
+	if (isset($_GET['page'])) {
+		$page = $_GET['page'];
+	}
+	return $page;
+}
+
+function getPagingLayout() {
+	$current = getCurrentPage();
+	$maxPages = getPageCount();
+	$lowerBound = max(0, $current - (int)(NUM_PAGES / 2));
+	$upperBound = min($maxPages, $current + (int)(NUM_PAGES / 2));
+	return array("lowerBound" 			=> $lowerBound,
+				 "upperBound" 			=> $upperBound,
+				 "showFirstPageLink" 	=> $lowerBound > 1,
+				 "showLastPageLink"		=> $upperBound != $maxPages,
+				 "maxPages"				=> $maxPages);
+}
+
+function getUrlForPage($page) {
+	$currentParams = $_GET;
+	$currentParams['page'] = $page;
+
+	$uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+	$query = "?".http_build_query($currentParams);
+	return $uri.$query;
+}
+
+function getListings() {
+	$filter = getAppliedFilter();
+	$search = getSearchValue();
+	$page = getCurrentPage();
+	return Listing::getWithFilterSearch($filter, $search, $page, ITEMS_PER_PAGE);
 }
 
 function getListing() {
@@ -40,6 +78,13 @@ function getListing() {
 	else {
 		return NULL;
 	}
+}
+
+function getPageCount() {
+	$filter = getAppliedFilter();
+	$search = getSearchValue();
+	$count = Listing::getCountWithFilterSearch($filter, $search);
+	return (int)($count / ITEMS_PER_PAGE);
 }
 
 function newListing($user) {
